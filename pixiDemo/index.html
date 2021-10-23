@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="js/pixi.min.js"></script>
+    <script>
+		var app = new PIXI.Application(480,700);
+		document.body.appendChild(app.view);
+		
+		var bg = new PIXI.Sprite.fromImage("res/bg.webp");
+		app.stage.addChild(bg);
+		
+		
+		//添加开始图片
+		var	kaishi = new PIXI.Sprite.fromImage("res/ks.webp");
+		kaishi.x=200;
+		kaishi.y=300;
+		kaishi.scale.set(2,2);
+		
+		app.stage.addChild(kaishi);
+		//开始动画
+		kaishi.interactive = true;
+		kaishi.on('click', xs);
+		function xs() {
+			kaishi.visible=false ;	
+			plane.visible=true;
+			bullet.visible=true;
+			defen.visible=true;
+			zt.visible=true;
+			mb1.visible=true;
+			mb2.visible=true;
+			mb3.visible=true;
+		}
+	//添加子弹图片
+	var bullet = new PIXI.Sprite.fromImage("res/zd.png");
+	bullet.anchor.set(0.5,0.5);
+	bullet.visible=false;
+	app.stage.addChild(bullet);
+			
+		
+	//点击鼠标，控制子弹位置
+	var a=0;
+	bg.interactive = true;
+	bg.on('click', sj);
+	function sj() {
+		if(a==0){
+	    bullet.x = plane.x;
+	    bullet.y = plane.y;
+			a=1;
+	}
+	}
+	
+	//子弹动画
+	app.ticker.add(animate);
+	function animate() {
+	    bullet.y -= 20;
+		if(bullet.y<-50){
+			a=0;
+			}
+		else if(bullet.x<mb1.x+mb1.width/2&&bullet.x>mb1.x-mb1.width/2){
+			if(bullet.y>=mb1.y+mb1.height/2){
+				app.stage.removeChild(mb1);
+				a=0;
+				mb1.x=Math.random()*450;
+				mb1.y=Math.random()*300;
+				mb1.anchor.set(0.5,0.5);
+				app.stage.addChild(mb1);
+				score++;
+			
+				defen.text="得分: "+score;
+				}
+		}
+		else if(bullet.x<mb2.x+mb2.width/2&&bullet.x>mb2.x-mb2.width/2){
+			if(bullet.y>=mb2.y+mb2.height/2){
+				app.stage.removeChild(mb2);
+				a=0;
+				mb2.x=Math.random()*450;
+				mb2.y=Math.random()*200;
+				mb2.anchor.set(0.5,0.5);
+				app.stage.addChild(mb2);
+				score++;
+				
+				defen.text="得分: "+score;
+				}
+			}
+			else if(bullet.x<mb3.x+mb3.width/2&&bullet.x>mb3.x-mb3.width/2){
+				if(bullet.y>=mb3.y+mb3.height/2){
+					app.stage.removeChild(mb3);
+					a=0;
+					mb3.x=Math.random()*450;
+					mb3.y=Math.random()*100;
+					mb3.anchor.set(0.5,0.5);
+					app.stage.addChild(mb3);
+					score++;
+					defen.text="得分: "+score;
+					}
+				}
+	
+	}	
+		
+	//添加飞机
+	var plane = PIXI.Sprite.fromImage("res/feij.webp");
+	plane.x = 240;
+	plane.y = 600;
+	plane.anchor.set(0.5,0.5);
+	app.stage.addChild(plane);	
+	plane.visible=false;
+	
+	
+	//飞机plane的鼠标跟随
+	bg.interactive=true;
+	bg.on('mousemove', movePlane);
+	function movePlane(event) {
+	    var pos = event.data.getLocalPosition(app.stage);
+	    plane.x = pos.x;
+	}		
+	
+	//添加目标图片
+	var	mb1 = new PIXI.Sprite.fromImage("res/mb.webp");
+	mb1.x=Math.random()*450;
+	mb1.y=Math.random()*300;
+	mb1.anchor.set(0.5,0.5);
+	app.stage.addChild(mb1);
+	mb1.visible=false;
+	var	mb3 = new PIXI.Sprite.fromImage("res/mb.webp");
+	mb3.x=Math.random()*450;
+	mb3.y=Math.random()*100;
+	app.stage.addChild(mb3);
+	mb3.visible=false;
+	var	mb2 = new PIXI.Sprite.fromImage("res/mb.webp");
+	mb2.x=Math.random()*450;
+	mb2.y=Math.random()*200;
+	app.stage.addChild(mb2);
+	mb2.visible=false;
+	
+		
+	//添加暂停图片
+	var	zt = new PIXI.Sprite.fromImage("res/zt.webp");
+	zt.x=400;
+	zt.y=50;
+	app.stage.addChild(zt);
+	zt.visible=false;
+	
+
+	//添加结束图片
+	var	js = new PIXI.Sprite.fromImage("res/js.webp");
+	js.x=100;
+	js.y=400;
+	app.stage.addChild(js);
+	js.visible=false;
+	
+	//添加继续图片
+	var	jx = new PIXI.Sprite.fromImage("res/jx.webp");
+	jx.x=400;
+	jx.y=40;
+	app.stage.addChild(jx);
+	jx.visible=false;
+	//继续动画
+	jx.interactive = true;
+	jx.on('click', JX);
+	function JX() {
+	  js.visible=false;
+	  zt.visible=true;
+	  plane.visible=true;
+	  bullet.visible=true;
+	  defen.visible=true;
+	  mb1.visible=true;
+	  mb2.visible=true;
+	  mb3.visible=true;
+	  jx.visible=false;
+	
+	  
+	}
+
+	//暂停动画
+	zt.interactive = true;
+	zt.on('click', ZT);
+	function ZT() {
+	  js.visible=true;
+	  zt.visible=false;
+	  plane.visible=false;
+	  bullet.visible=false;
+	  defen.visible=false;
+	  mb1.visible=false;
+	  mb2.visible=false;
+	  mb3.visible=false;
+	  jx.visible=true;
+	
+	  
+	}
+	//添加得分
+	var score=0;
+	var defen = new PIXI.Text("得分:");
+	app.stage.addChild(defen);
+	defen.style.fill = 0xffffff;
+	defen.visible=false;
+	defen.x=50;
+	defen.y=50;
+
+	//结束动画
+	js.interactive = true;
+	js.on('click', CK);
+	function CK() {	
+		defen.visible=true;
+		defen.anchor.set(0.5,0.5);
+		defen.x=240;
+		defen.y=300;
+		defen.scale.set(2,2);
+	    jx.visible=false;
+		js.visible=false;
+	}
+
+	
+		
+		
+    </script>
+</body>
+</html>
